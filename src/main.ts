@@ -7,8 +7,8 @@ async function main() {
   await connectMongo();
   await connectRedis();
   const app = createApp();
-  app.listen(env.PORT, () => {
-    console.log(`Khaja Traders API listening on http://localhost:${env.PORT}`);
+  app.listen(env.PORT, '0.0.0.0', () => {
+    console.log(`Khaja Traders API listening on port ${env.PORT}`);
   });
 }
 

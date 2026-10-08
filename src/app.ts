@@ -23,7 +23,13 @@ export function createApp() {
   const app = express();
   app.set('trust proxy', 1);
   app.use(helmet());
-  app.use(cors({ origin: env.CLIENT_ORIGIN }));
+  const allowedOrigins = env.CLIENT_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean);
+  app.use(cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(null, false);
+    },
+  }));
   app.post('/api/payments/stripe/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
   app.use(express.json({ limit: '1mb' }));
   app.use(rateLimit('api', 300, 15 * 60));
